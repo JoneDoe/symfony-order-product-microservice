@@ -1,0 +1,55 @@
+services:
+  product-app:
+    image: roadrunner2023.3.11-php8.3-amqp
+    container_name: product-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./product/.env
+    ports:
+      - 8080:8080
+    command: "rr serve -c .rr.dev.yaml"
+    volumes:
+      - ./product:/usr/src/app
+    depends_on:
+      - database
+      - rabbitmq
+
+  order-app:
+    image: roadrunner2023.3.11-php8.3-amqp
+    container_name: order-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./order/.env
+    ports:
+      - 8081:8080
+    command: "rr serve -c .rr.dev.yaml"
+    volumes:
+      - ./order:/usr/src/app
+    depends_on:
+      - database
+      - rabbitmq
+
+  database:
+    container_name: database
+    image: postgres:${POSTGRES_VERSION:-14}-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.13-management
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+
+volumes:
+  database_data:

@@ -1,0 +1,16 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  SharedBundle\Service\ProductSyncServiceInterface: ~
+
+  exception.listener:
+    class: SharedBundle\EventListener\ExceptionListener
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception }
+
+  message_handler.product_sync:
+    class: SharedBundle\Amqp\Handler\ProductSyncHandler
+    tags:
+      - { name: messenger.message_handler }
