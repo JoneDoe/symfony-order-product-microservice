@@ -9,8 +9,8 @@ http:
   address: 0.0.0.0:8080
   middleware: [ "static", "gzip" ]
   pool:
-    numWorkers: 2
-    debug: true
+    num_workers: 2
+    debug: false
   uploads:
     forbid: [ ".php", ".exe", ".bat" ]
   static:
@@ -23,7 +23,7 @@ logs:
     http:
       level: debug # Log all http requests, set to info to disable
     server:
-      level: info # Everything written to worker stderr is logged
+      level: debug # Everything written to worker stderr is logged
       mode: raw
     metrics:
       level: debug
